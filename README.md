@@ -1,2 +1,2 @@
 # Churn_Finance_G2
-Tima
+Application de la Data Science: De la Modélisation au Business
