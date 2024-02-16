@@ -1,0 +1,42 @@
+name: IUE - Docker Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        run: docker build . -t essaigitactions
+
+      - name: List of Docker images
+        run: docker image ls
+
+      - name: Run Docker Container
+        run: docker run -d -p 5000:5000 essaigitactions
+
+      - name: List of Docker -a AFTER
+        run: docker ps -a  
+
+      - name: List of Docker -q AFTER
+        run: docker ps --filter "ancestor=essaigitactions" -q
+
+      - name: Test
+        run: docker exec $(docker ps --filter "ancestor=essaigitactions" -q) python -m unittest discover tests
+
+      - name: Stop Docker Container
+        run: docker stop essaigitactions
+
+
