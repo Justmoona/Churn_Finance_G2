@@ -1,4 +1,4 @@
-name: IUE - Docker Build and Test
+name: IUE_M2 - Projet churn finance with CI/CD
 
 on:
   push:

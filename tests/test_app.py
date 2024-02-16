@@ -1,5 +1,4 @@
 import unittest
-from app.app import app
 
 class TestApp(unittest.TestCase):
     def test_index(self):
