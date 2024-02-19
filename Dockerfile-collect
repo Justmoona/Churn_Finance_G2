@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-WORKDIR /CHURN_FINANCE_G2
+WORKDIR /churn_finance_g2
 
 
 COPY requirements.txt requirements.txt
@@ -13,4 +13,4 @@ RUN python collect/collect.py
 
 COPY . .
 
-CMD ["python", "./CHURN_FINANCE_G2/collect/collect.py"]
+CMD ["python", "./churn_finance_g2/collect/collect.py"]

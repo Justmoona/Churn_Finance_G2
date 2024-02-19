@@ -9,5 +9,5 @@ df.head()
 df.tail()   
 df.shape
 df.dtypes
-df.info()
+# df.info()
 

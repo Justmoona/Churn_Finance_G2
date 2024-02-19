@@ -23,24 +23,24 @@ jobs:
       #   run: docker build . -t CHURN_FINANCE_G2
 
       - name: Build Docker Image collect
-        run: docker build . --file Dockerfile-collect -t CHURN_FINANCE_G2
+        run: docker build . --file Dockerfile-collect -t churn_finance_g2
 
       - name: List of Docker images
         run: docker image ls
 
       - name: Run Docker Container
-        run: docker run -d -p 5000:5000 CHURN_FINANCE_G2
+        run: docker run -d -p 5000:5000 churn_finance_g2
 
       - name: List of Docker -a AFTER
         run: docker ps -a  
 
       - name: List of Docker -q AFTER
-        run: docker ps --filter "ancestor=CHURN_FINANCE_G2" -q
+        run: docker ps --filter "ancestor=churn_finance_g2" -q
 
       # - name: Test
       #   run: docker exec $(docker ps --filter "ancestor=CHURN_FINANCE_G2" -q) python -m unittest discover tests
 
       - name: Stop Docker Container
-        run: docker stop CHURN_FINANCE_G2
+        run: docker stop churn_finance_g2
 
 
