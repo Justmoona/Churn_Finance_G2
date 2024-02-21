@@ -7,7 +7,7 @@ COPY . /churn_finance_g2
 
 COPY requirements.txt requirements.txt
 
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
