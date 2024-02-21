@@ -23,7 +23,7 @@ jobs:
       #   run: docker build . -t CHURN_FINANCE_G2
 
       - name: Build Docker Image collect
-        run: docker build . --file Dockerfile-collect -t churn_finance_g2
+        run: docker build . -t churn_finance_g2
 
       - name: List of Docker images
         run: docker image ls
