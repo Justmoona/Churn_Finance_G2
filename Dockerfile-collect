@@ -6,11 +6,11 @@ COPY . /churn_finance_g2
 
 COPY requirements.txt requirements.txt
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
-# COPY collect/collect.py collect/collect.py
+COPY collect/collect.py collect/collect.py
 
-# RUN python collect/collect.py
+RUN python collect/collect.py
 
 COPY . .
 
