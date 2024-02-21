@@ -19,6 +19,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+        with:
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile-collect
+
       # - name: Build Docker Image requirements
       #   run: docker build . -t CHURN_FINANCE_G2
 
