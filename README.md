@@ -14,3 +14,42 @@
   - IsActiveMember: statut d'adhésion actif (0 = Non, 1 = Oui).
   - EstimatedSalary: Salaire estimé.
   - Exited: abandonné ou pas ? (0 = Non, 1 = Oui). C'est la variable que nous cherchons à prédire en utilisant les autres fonctionnalités.
+
+
+#### Creer un nouveau environnement (utiliser la version de python 3.9)
+  Réference (https://realpython.com/python-virtual-environments-a-primer/#create-it)
+            (https://www.pythoniste.fr/anaconda/les-environnements-virtuels-en-python-avec-anaconda/)
+            
+  * Windows
+
+``` Command
+conda create -n mon_environement python=<version>
+```
+
+#### Pour activer l'environnement virtual conda
+```
+conda activate mon_environement
+```
+
+#### Pour desactiver l'environnement virtual conda
+```
+conda deactivate
+```
+
+
+  * Mac Os
+
+``` Command
+python<version> -m venv mon_environement
+```
+
+#### Pour activer l'environnement virtual python
+```
+source mon_environement/bin/activate
+```
+
+#### Pour desactiver l'environnement virtual python
+```
+deactivate
+```
+
