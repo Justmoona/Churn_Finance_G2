@@ -1,10 +1,9 @@
 Flask
-opendatasets
 pandas
 numpy
 seaborn
 matplotlib
 plotly
-scikit-learn
+scikit-learn==1.2.2
 gdown
 gunicorn
