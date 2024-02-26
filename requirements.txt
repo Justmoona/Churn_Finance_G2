@@ -6,6 +6,7 @@ seaborn
 matplotlib
 plotly
 sklearn
+gdown
 
 # Flask==2.0.1
 # opendatasets==0.1.22
