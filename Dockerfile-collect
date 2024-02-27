@@ -11,6 +11,6 @@ COPY collect/collect.py collect/collect.py
 
 RUN python collect/collect.py
 
-COPY . .
+COPY . .  
 
-CMD ["python", "./churn_finance_g2/collect/collect.py"]
+CMD ["python", "./churn_finance_g2/collect/collect.py"] 
