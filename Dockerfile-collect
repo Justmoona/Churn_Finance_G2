@@ -6,8 +6,10 @@ COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY ./app/collect ./app
 
-# EXPOSE $PORT
+RUN ls
+
+EXPOSE 4000
 
 CMD ["python", "./app/collect.py"]
