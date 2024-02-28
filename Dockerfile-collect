@@ -10,6 +10,8 @@ COPY ./app/collect ./app
 
 RUN ls
 
+RUN python ./app/collect.py
+
 EXPOSE 4000
 
 CMD ["python", "./app/collect.py"]

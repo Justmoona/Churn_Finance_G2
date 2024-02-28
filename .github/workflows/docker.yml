@@ -57,8 +57,8 @@ jobs:
       - name: List of Docker -a AFTER
         run: docker ps -a  
 
-      - name: List of Docker -q AFTER
-        run: docker ps --filter "ancestor=churn_finance_g2" -q
+      # - name: List of Docker -q AFTER
+      #   run: docker ps --filter "ancestor=churn_finance_g2" -q
 
       # - name: Test
       #   run: docker exec $(docker ps --filter "ancestor=CHURN_FINANCE_G2" -q) python -m unittest discover tests
