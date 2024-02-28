@@ -11,6 +11,8 @@ COPY . .
 
 RUN ls
 
+RUN python ./app/app.py
+
 EXPOSE 5000
 
 CMD [ "python", "./app/app.py" ]
