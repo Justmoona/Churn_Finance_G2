@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - projet-dockeriser
   pull_request:
     branches:
       - main
@@ -62,10 +63,10 @@ jobs:
       # - name: Test
       #   run: docker exec $(docker ps --filter "ancestor=CHURN_FINANCE_G2" -q) python -m unittest discover tests
 
-      - name: Stop Docker Container
+      - name: Stop Docker Container collect
         run: docker stop churn_finance_g2_collect
 
-      - name: Stop Docker Container
+      - name: Stop Docker Container app
         run: docker stop churn_finance_g2_app
 
 
