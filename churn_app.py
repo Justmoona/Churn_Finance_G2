@@ -47,7 +47,7 @@ def main():
     st.image('Images/Customer-Churn.png', use_column_width='auto')
 
     # Load the dataset
-    file_path = 'churn_data.csv'  # Replace with the path to your dataset
+    file_path = 'app/data/churn.csv'  # Replace with the path to your dataset
     data = load_data(file_path)
 
     # User input for features
