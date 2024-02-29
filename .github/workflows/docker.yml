@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - projet-dockeriser
   pull_request:
     branches:
       - main
@@ -34,25 +35,38 @@ jobs:
       # - name: Build Docker Image requirements
       #   run: docker build . -t CHURN_FINANCE_G2
 
-      - name: Build Docker Image collect
-        run: docker build . -t churn_finance_g2
+      # Docker image pour la collect de données
+      - name: Build Docker Image for data collect
+        run: docker build -t churn_finance_g2_collect -f Dockerfile-collect .
 
+      # Docker image pour le lancement de l'application
+      - name: Build Docker Image for run app web
+        run: docker build -t churn_finance_g2_app -f Dockerfile .
+
+      # Lister les images
       - name: List of Docker images
         run: docker image ls
 
+      # Lancer le conteneur pour
       - name: Run Docker Container
-        run: docker run -d -p 5000:5000 churn_finance_g2
+        run: docker run -d -p 4000:4000 churn_finance_g2_collect
+      
+      - name: Run Docker Container
+        run: docker run -d -p 5000:5000 churn_finance_g2_app
 
       - name: List of Docker -a AFTER
         run: docker ps -a  
 
-      - name: List of Docker -q AFTER
-        run: docker ps --filter "ancestor=churn_finance_g2" -q
+      # - name: List of Docker -q AFTER
+      #   run: docker ps --filter "ancestor=churn_finance_g2" -q
 
       # - name: Test
       #   run: docker exec $(docker ps --filter "ancestor=CHURN_FINANCE_G2" -q) python -m unittest discover tests
 
-      - name: Stop Docker Container
-        run: docker stop churn_finance_g2
+      - name: Stop Docker Container collect
+        run: docker stop churn_finance_g2_collect
+
+      - name: Stop Docker Container app
+        run: docker stop churn_finance_g2_app
 
 
