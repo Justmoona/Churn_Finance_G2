@@ -10,8 +10,6 @@ COPY ./app/collect ./app
 
 RUN ls
 
-RUN python ./app/collect.py
+COPY . .  
 
-EXPOSE 4000
-
-CMD ["python", "./app/collect.py"]
+CMD ["python", "./churn_finance_g2/collect/collect.py"] 
