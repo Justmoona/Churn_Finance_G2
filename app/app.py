@@ -18,7 +18,7 @@ def index():
 @app.route('/predict_api',methods=['POST'])
 def predict_api():
     data=request.json['data']
-    print('Donnees renvoyer: => {}'.format(data))
+    print('Donnees envoyer: => {}'.format(data))
     print(np.array(list(data.values())).reshape(1,-1))
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
     print('Variables d\'entrees: => {}'.format(new_data))

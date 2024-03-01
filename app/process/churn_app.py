@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
-import joblib
+import numpy as np
+import pickle
 
-# Load the trained Random Forest model
-model = joblib.load('model/rfcmodel.pkl') 
+# Charger le modele
+rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
+scalar=pickle.load(open('model/scaling.pkl','rb'))
 
 # Load the dataset
 @st.cache_data
@@ -17,29 +17,13 @@ def load_data(file_path):
 
 # Function to preprocess user input
 def preprocess_data(input_data):
-    # Drop unnecessary columns
-    input_data.drop(['RowNumber', 'CustomerId', 'Surname'], axis=1, inplace=True)
-
-    # Remove duplicate rows
-    input_data.drop_duplicates(inplace=True)
-
-    # Handle missing values if any (replace NaNs, etc.)
-
-    input_data.fillna(0, inplace=True)
-
-    # One-hot encode categorical variables
-    input_data = pd.get_dummies(input_data, columns=['Geography', 'Gender'])
-
-    return input_data
-    
-
-# Function to make predictions
-def predict_churn(input_df):
-    # Preprocess input data (if necessary)
-    # input_scaled = scaler.transform(input_df)
-    # Predict churn
-    prediction = model.predict(input_df)
-    return prediction
+    print('Donnees envoyer: => {}'.format(input_data))
+    print(np.array(list(input_data.values())).reshape(1,-1))
+    new_data=scalar.transform(np.array(list(input_data.values())).reshape(1,-1))
+    print('Variables d\'entrees: => {}'.format(new_data))
+    output=rfcmodel.predict(new_data)
+    print('Output du model => {}'.format(output[0]))
+    return output
 
 # Streamlit interface
 def main():
@@ -74,6 +58,15 @@ def main():
     # Map radio button responses to binary values
     is_active_member = 1 if is_active_member == 'Yes' else 0
     has_cr_card = 1 if has_cr_card == 'Yes' else 0
+    if geography == 'France':
+        geography = 0
+    elif geography == 'Germany':
+        geography = 1
+    else:
+        geography = 2
+    
+    gender = 1 if gender == 'Mal' else 0
+
 
     input_data = {'CreditScore': credit_score,
                   'Age': age,
@@ -88,10 +81,8 @@ def main():
 
     # When the user clicks the predict button
     if st.button('Predict'):
-        # Preprocess input
-        input_df = preprocess_data(input_data)
         # Make prediction
-        prediction = predict_churn(input_df)
+        prediction = preprocess_data(input_data)
         # Display prediction result
         if prediction[0] == 0:
             st.success('Customer is predicted to stay.')
