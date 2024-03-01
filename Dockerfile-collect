@@ -6,7 +6,7 @@ COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
 
-COPY ./app/collect ./app
+COPY ./app/collect .
 
 RUN ls
 
@@ -14,6 +14,6 @@ RUN ls
 
 EXPOSE 4000
 
-CMD python ./app/collect.py
+CMD python collect.py
 
 # CMD ["python", "./app/collect.py"] 
