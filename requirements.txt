@@ -9,6 +9,5 @@ plotly-express==0.4.1
 requests==2.31.0
 scikit-learn==1.2.2
 gdown
-tensorflow
 gunicorn
 pyarrow==9.0.0

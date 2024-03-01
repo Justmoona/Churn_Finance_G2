@@ -14,4 +14,4 @@ RUN ls
 
 EXPOSE 4000
 
-CMD ["python", "./app/collect/collect.py"] 
+CMD ["python", "./app/collect.py"] 

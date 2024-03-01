@@ -42,7 +42,7 @@ def RFC(train_x, test_x, y_train, y_test):
     print(confusion_matrix(y_test, y_test_pred_rfc))
     # cm = confusion_matrix(y_test, y_test_pred_rfc)
     # sns.heatmap(cm,annot=True,fmt="d")
-    print("######### Afficahge du dataFrame ##########")
+    print("######### DataFrame accuracy ##########")
     results = pd.DataFrame([['Random Forest Classifier',as_rfc,ps_rfc,rs_rfc,f1_rfc]],columns=['Model','Accuracy','Precision','Recall','F1'])
     print(results)
 
