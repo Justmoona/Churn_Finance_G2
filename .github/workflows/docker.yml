@@ -52,7 +52,6 @@ jobs:
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
 
       # Docker image pour l'application web
-      Docker image pour le lancement de l'application
       - name: Build Docker Image for run app web
         run: docker build -t churn_finance_g2_app -f Dockerfile .
 
