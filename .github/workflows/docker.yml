@@ -24,7 +24,7 @@ jobs:
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python app/Pretraitement_modelisation/pretraitement_modelisation.py
+          python app/process/pretraitement_modelisation.py
 
         # run: |
         #   Your ML workflow goes here
