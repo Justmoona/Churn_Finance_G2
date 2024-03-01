@@ -16,4 +16,4 @@ EXPOSE 4000
 
 RUN python collect.py
 
-CMD ["python", "collect.py"] 
+# CMD ["python", "collect.py"] 
