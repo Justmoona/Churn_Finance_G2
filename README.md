@@ -31,6 +31,11 @@ conda create -n mon_environement python=<version>
 conda activate mon_environement
 ```
 
+#### Installation des packages
+```
+pip install -r requirements.txt
+```
+
 #### Pour desactiver l'environnement virtual conda
 ```
 conda deactivate
@@ -46,6 +51,11 @@ python<version> -m venv mon_environement
 #### Pour activer l'environnement virtual python
 ```
 source mon_environement/bin/activate
+```
+
+#### Installation des packages
+```
+pip install -r requirements.txt
 ```
 
 #### Pour desactiver l'environnement virtual python

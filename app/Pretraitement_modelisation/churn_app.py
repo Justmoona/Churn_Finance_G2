@@ -10,7 +10,7 @@ import joblib
 model = joblib.load('model/rfcmodel.pkl') 
 
 # Load the dataset
-@st.cache
+@st.cache_data
 def load_data(file_path):
     data = pd.read_csv(file_path)
     return data
@@ -46,6 +46,15 @@ def main():
     st.title('Churn Prediction')
     st.image('Images/Customer-Churn.png', use_column_width='auto')
 
+    st.sidebar.title('Taux de désabonnement des clients ??')
+    st.sidebar.image('Images/graphic.png')
+    st.sidebar.info(
+        """
+    Le présent modèle d’apprentissage automatique estcapable de prédire si les clients d’une banque quittent ou non la banque.
+
+        """
+    )
+    
     # Load the dataset
     file_path = 'app/data/churn.csv'  # Replace with the path to your dataset
     data = load_data(file_path)

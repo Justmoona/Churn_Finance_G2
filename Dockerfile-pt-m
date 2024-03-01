@@ -6,12 +6,11 @@ COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
 
-COPY ./app/collect ./app
+COPY . . 
 
 RUN ls
 
-# COPY . . 
 
-EXPOSE 4000
+# EXPOSE 4000
 
-CMD ["python", "./app/collect/collect.py"] 
+CMD ["python", "./app/Pretraitement_modelisation/pretraitement_modelisation.py"]
