@@ -25,13 +25,53 @@ def preprocess_data(input_data):
     print('Output du model => {}'.format(output[0]))
     return output
 
+         
+
+def plot_churn_distribution(data):
+    churn_counts = data['Exited'].value_counts()
+    plt.figure(figsize=(8, 6))
+    sns.barplot(x=churn_counts.index, y=churn_counts.values)
+    plt.title('Churn Distribution')
+    plt.xlabel('Churn')
+    plt.ylabel('Count')
+    st.pyplot()
+
+# Function to plot age distribution by churn
+def plot_age_distribution(data):
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=data, x='Age', hue='Exited', kde=True, bins=30, alpha=0.7)
+    plt.title('Age Distribution by Churn')
+    plt.xlabel('Age')
+    plt.ylabel('Count')
+    st.pyplot()
+
+# Function to plot balance distribution by churn
+def plot_balance_distribution(data):
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=data, x='Balance', hue='Exited', kde=True, bins=30, alpha=0.7)
+    plt.title('Balance Distribution by Churn')
+    plt.xlabel('Balance')
+    plt.ylabel('Count')
+    st.pyplot()
+
+# Function to plot categorical variable distribution by churn
+def plot_categorical_distribution(data, column):
+    plt.figure(figsize=(10, 6))
+    sns.countplot(data=data, x=column, hue='Exited')
+    plt.title(f'{column} Distribution by Churn')
+    plt.xlabel(column)
+    plt.ylabel('Count')
+    st.pyplot()
+
+
+
 # Streamlit interface
 def main():
     st.title('Churn Prediction')
     st.image('Images/Customer-Churn.png', use_column_width='auto')
 
     st.sidebar.title('Taux de désabonnement des clients ??')
-    st.sidebar.image('Images/graphic.png')
+    st.sidebar.image('Images/Stop-Customer-Churn.png')
     st.sidebar.info(
         """
     Le présent modèle d’apprentissage automatique estcapable de prédire si les clients d’une banque quittent ou non la banque.
@@ -92,37 +132,62 @@ def main():
     # Data visualization
     st.header('Data Visualization')
 
+    # Select visualization type
+    visualization_type = st.selectbox('Select Visualization:', ['Churn Distribution', 'Age Distribution by Churn',
+                                                                'Balance Distribution by Churn', 'Geography Distribution',
+                                                                'Gender Distribution', 'NumOfProducts Distribution',
+                                                                'HasCrCard Distribution'])
+
+    # Plot selected visualization
+    if visualization_type == 'Churn Distribution':
+        plot_churn_distribution(data)
+    elif visualization_type == 'Age Distribution by Churn':
+        plot_age_distribution(data)
+    elif visualization_type == 'Balance Distribution by Churn':
+        plot_balance_distribution(data)
+    elif visualization_type == 'Geography Distribution':
+        plot_categorical_distribution(data, 'Geography')
+    elif visualization_type == 'Gender Distribution':
+        plot_categorical_distribution(data, 'Gender')
+    elif visualization_type == 'NumOfProducts Distribution':
+        plot_categorical_distribution(data, 'NumOfProducts')
+    elif visualization_type == 'HasCrCard Distribution':
+        plot_categorical_distribution(data, 'HasCrCard')
+
+
+
+
     # Churn Distribution
-    st.subheader('Churn Distribution')
-    st.bar_chart(data['Exited'].value_counts())
+    # st.subheader('Churn Distribution')
+    # st.bar_chart(data['Exited'].value_counts())
 
-    # Age Distribution by Churn
-    st.subheader('Age Distribution by Churn')
-    fig, ax = plt.subplots()
-    sns.histplot(data=data, x='Age', hue='Exited', kde=True, multiple='stack', ax=ax)
-    st.pyplot(fig)
+    # # Age Distribution by Churn
+    # st.subheader('Age Distribution by Churn')
+    # fig, ax = plt.subplots()
+    # sns.histplot(data=data, x='Age', hue='Exited', kde=True, multiple='stack', ax=ax)
+    # st.pyplot(fig)
 
-    # Balance Distribution by Churn
-    st.subheader('Balance Distribution by Churn')
-    fig, ax = plt.subplots()
-    sns.histplot(data=data, x='Balance', hue='Exited', kde=True, multiple='stack', ax=ax)
-    st.pyplot(fig)
+    # # Balance Distribution by Churn
+    # st.subheader('Balance Distribution by Churn')
+    # fig, ax = plt.subplots()
+    # sns.histplot(data=data, x='Balance', hue='Exited', kde=True, multiple='stack', ax=ax)
+    # st.pyplot(fig)
 
-    # Distribution of 'Geography'
-    st.subheader('Distribution of Geography')
-    st.bar_chart(data['Geography'].value_counts())
+    # # Distribution of 'Geography'
+    # st.subheader('Distribution of Geography')
+    # st.bar_chart(data['Geography'].value_counts())
 
-    # Distribution of 'Gender'
-    st.subheader('Distribution of Gender')
-    st.bar_chart(data['Gender'].value_counts())
+    # # Distribution of 'Gender'
+    # st.subheader('Distribution of Gender')
+    # st.bar_chart(data['Gender'].value_counts())
 
-    # Distribution of 'NumOfProducts'
-    st.subheader('Distribution of Number of Products')
-    st.bar_chart(data['NumOfProducts'].value_counts())
+    # # Distribution of 'NumOfProducts'
+    # st.subheader('Distribution of Number of Products')
+    # st.bar_chart(data['NumOfProducts'].value_counts())
 
-    # Distribution of 'HasCrCard'
-    st.subheader('Distribution of Has Credit Card')
-    st.bar_chart(data['HasCrCard'].value_counts())
+    # # Distribution of 'HasCrCard'
+    # st.subheader('Distribution of Has Credit Card')
+    # st.bar_chart(data['HasCrCard'].value_counts())
 
 if __name__ == '__main__':
     main()
