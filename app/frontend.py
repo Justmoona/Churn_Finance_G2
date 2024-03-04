@@ -25,7 +25,8 @@ def preprocess_data(input_data):
     print('Output du model => {}'.format(output[0]))
     return output
 
-         
+# Bout de code permettant de desactiver l'avertisement sur les   
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 def plot_churn_distribution(data):
     churn_counts = data['Exited'].value_counts()
@@ -74,7 +75,7 @@ def main():
     st.sidebar.image('Images/Stop-Customer-Churn.png')
     st.sidebar.info(
         """
-    Le présent modèle d’apprentissage automatique estcapable de prédire si les clients d’une banque quittent ou non la banque.
+    Le présent modèle d’apprentissage automatique est capable de prédire si les clients d’une banque quittent ou non la banque.
 
         """
     )
@@ -88,12 +89,12 @@ def main():
     age = st.slider('Age', min_value=18, max_value=100, step=1, value=30)
     balance = st.number_input('Balance', min_value=0.0, step=1.0, value=0.0)
     num_of_products = st.slider('Number of Products', min_value=1, max_value=4, step=1, value=1)
-    estimated_salary = st.number_input('Estimated Salary', min_value=0.0, step=1.0, value=50000.0)
-    tenure = st.slider('Tenure (in years)', min_value=0, max_value=20, step=1, value=5)
+    estimated_salary = st.number_input('Estimated Salary', min_value=10000.00, max_value=200000.00, step=10000.00, value=50000.00)
+    tenure = st.slider('Tenure (in years)', min_value=0, max_value=10, step=1, value=5)
     is_active_member = st.radio('Is Active Member?', ('Yes', 'No'))
     has_cr_card = st.radio('Has Credit Card?', ('Yes', 'No'))
     geography = st.selectbox('Geography', ('France', 'Germany', 'Spain'))
-    gender = st.selectbox('Gender', ('Female', 'Male'))
+    gender = st.selectbox('Gender', ('Femme', 'Homme'))
 
     # Map radio button responses to binary values
     is_active_member = 1 if is_active_member == 'Yes' else 0
@@ -105,7 +106,7 @@ def main():
     else:
         geography = 2
     
-    gender = 1 if gender == 'Mal' else 0
+    gender = 1 if gender == 'Homme' else 0
 
 
     input_data = {'CreditScore': credit_score,
@@ -125,9 +126,9 @@ def main():
         prediction = preprocess_data(input_data)
         # Display prediction result
         if prediction[0] == 0:
-            st.success('Customer is predicted to stay.')
+            st.success('Le client devrait rester.')
         else:
-            st.warning('Customer is predicted to churn.')
+            st.warning('On s’attend à ce que le client se désabonne.')
 
     # Data visualization
     st.header('Data Visualization')
