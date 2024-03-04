@@ -11,13 +11,27 @@ app=Flask(__name__)
 rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
 scalar=pickle.load(open('model/scaling.pkl','rb'))
 
+class Data():
+    CreditScore: int
+    Geography: str
+    Gender: str
+    Age: int
+    Tenure: int
+    Balance: float
+    NumOfProducts: int
+    HasCrCard: int
+    IsActiveMember: int
+    EstimatedSalary: float
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/predict_api',methods=['POST'])
+# def predict_api(data: Data):
 def predict_api():
     data=request.json['data']
+    # data = data.dict()
     print('Donnees envoyer: => {}'.format(data))
     print(np.array(list(data.values())).reshape(1,-1))
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))

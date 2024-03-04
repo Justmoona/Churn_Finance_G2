@@ -1,0 +1,19 @@
+.css-j5r0tf {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #7E99AB;
+  }
+  
+  .diagnosis {
+    color: #fff;
+    padding: 12px 15px 12px 15px;
+    border-radius: 0.5em;
+  }
+  
+  .diagnosis.benign {
+    background-color: #01DB4B
+  }
+  
+  .diagnosis.malicious {
+    background-color: #FFFCE9
+  }

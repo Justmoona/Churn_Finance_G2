@@ -4,6 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
+import requests
+import json
 
 # Charger le modele
 rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
@@ -21,9 +23,14 @@ def preprocess_data(input_data):
     print(np.array(list(input_data.values())).reshape(1,-1))
     new_data=scalar.transform(np.array(list(input_data.values())).reshape(1,-1))
     print('Variables d\'entrees: => {}'.format(new_data))
-    output=rfcmodel.predict(new_data)
-    print('Output du model => {}'.format(output[0]))
+    # output=rfcmodel.predict(new_data)
+    st.subheader("Résultat")
+    st.write("Prediction:")
+    # output=rfcmodel.predict_proba(new_data)[0, 1]
+    output=rfcmodel.predict_proba(new_data)[0][1]
+    print('Output du model => {}'.format(output))
     return output
+
 
 # Bout de code permettant de desactiver l'avertisement sur les   
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -68,7 +75,8 @@ def plot_categorical_distribution(data, column):
 
 # Streamlit interface
 def main():
-    st.title('Churn Prediction')
+    st.title('📈 Churn Prediction')
+    # st.subheader("⏱ Loan Prediction")
     st.image('Images/Customer-Churn.png', use_column_width='auto')
 
     st.sidebar.title('Taux de désabonnement des clients ??')
@@ -76,25 +84,28 @@ def main():
     st.sidebar.info(
         """
     Le présent modèle d’apprentissage automatique est capable de prédire si les clients d’une banque quittent ou non la banque.
-
         """
     )
     
+    with open("app/statics/style.css") as f:
+        st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
+
     # Load the dataset
     file_path = 'app/data/churn.csv'  # Replace with the path to your dataset
     data = load_data(file_path)
 
     # User input for features
+    # L'ordre des champs est tres important pour l'obtention de resultats fiables
     credit_score = st.slider('Credit Score', min_value=300, max_value=850, step=1, value=500)
+    geography = st.selectbox('Geography', ('France', 'Germany', 'Spain'),help="Selectionner une region")
+    gender = st.selectbox('Gender', ('Femme', 'Homme'))
     age = st.slider('Age', min_value=18, max_value=100, step=1, value=30)
+    tenure = st.slider('Tenure (in years)', min_value=0, max_value=10, step=1, value=5)
     balance = st.number_input('Balance', min_value=0.0, step=1.0, value=0.0)
     num_of_products = st.slider('Number of Products', min_value=1, max_value=4, step=1, value=1)
-    estimated_salary = st.number_input('Estimated Salary', min_value=10000.00, max_value=200000.00, step=10000.00, value=50000.00)
-    tenure = st.slider('Tenure (in years)', min_value=0, max_value=10, step=1, value=5)
-    is_active_member = st.radio('Is Active Member?', ('Yes', 'No'))
     has_cr_card = st.radio('Has Credit Card?', ('Yes', 'No'))
-    geography = st.selectbox('Geography', ('France', 'Germany', 'Spain'))
-    gender = st.selectbox('Gender', ('Femme', 'Homme'))
+    is_active_member = st.radio('Is Active Member?', ('Yes', 'No'))
+    estimated_salary = st.number_input('Estimated Salary', min_value=10000.00, max_value=200000.00, step=10000.00, value=50000.00)
 
     # Map radio button responses to binary values
     is_active_member = 1 if is_active_member == 'Yes' else 0
@@ -110,25 +121,38 @@ def main():
 
 
     input_data = {'CreditScore': credit_score,
+                  'Geography': geography,
+                  'Gender': gender,
                   'Age': age,
+                  'Tenure': tenure,
                   'Balance': balance,
                   'NumOfProducts': num_of_products,
-                  'EstimatedSalary': estimated_salary,
-                  'Tenure': tenure,
-                  'IsActiveMember': is_active_member,
                   'HasCrCard': has_cr_card,
-                  'Geography': geography,
-                  'Gender': gender}
+                  'IsActiveMember': is_active_member,
+                  'EstimatedSalary': estimated_salary
+                  }
 
     # When the user clicks the predict button
     if st.button('Predict'):
-        # Make prediction
+        # preprocess_data(input_data)
+        # response = requests.post("http://127.0.0.1:5000/predict_api", json=input_data)
+        # print(response)
+        # prediction =response.text
+
+        # Appel de la methode de prediction
         prediction = preprocess_data(input_data)
-        # Display prediction result
-        if prediction[0] == 0:
-            st.success('Le client devrait rester.')
+        churn = prediction >= 0.5
+        output_prob = float(prediction)
+        output = bool(churn)
+        if output == False:
+            st.write("<span class='diagnosis benign'>Ce client devrait rester</span>", unsafe_allow_html=True)
+            # st.write(f"Probabilité churn (en pourcentage): {output_prob} %")
+            st.write("Probabilité churn (en pourcentage)",round(output_prob*100,2),"%")
+            # st.success('Le client devrait rester, avec une probabilité de {0} %'.format(output_prob))
         else:
-            st.warning('On s’attend à ce que le client se désabonne.')
+            # st.write("<span class='diagnosis malicious'>On s’attend à ce que le client se désabonne</span>", unsafe_allow_html=True)
+            st.warning('On s’attend à ce que le client se désabonne')
+            st.write("Probabilité (en pourcentage)",round(output_prob*100,2),"%")
 
     # Data visualization
     st.header('Data Visualization')
@@ -156,39 +180,6 @@ def main():
         plot_categorical_distribution(data, 'HasCrCard')
 
 
-
-
-    # Churn Distribution
-    # st.subheader('Churn Distribution')
-    # st.bar_chart(data['Exited'].value_counts())
-
-    # # Age Distribution by Churn
-    # st.subheader('Age Distribution by Churn')
-    # fig, ax = plt.subplots()
-    # sns.histplot(data=data, x='Age', hue='Exited', kde=True, multiple='stack', ax=ax)
-    # st.pyplot(fig)
-
-    # # Balance Distribution by Churn
-    # st.subheader('Balance Distribution by Churn')
-    # fig, ax = plt.subplots()
-    # sns.histplot(data=data, x='Balance', hue='Exited', kde=True, multiple='stack', ax=ax)
-    # st.pyplot(fig)
-
-    # # Distribution of 'Geography'
-    # st.subheader('Distribution of Geography')
-    # st.bar_chart(data['Geography'].value_counts())
-
-    # # Distribution of 'Gender'
-    # st.subheader('Distribution of Gender')
-    # st.bar_chart(data['Gender'].value_counts())
-
-    # # Distribution of 'NumOfProducts'
-    # st.subheader('Distribution of Number of Products')
-    # st.bar_chart(data['NumOfProducts'].value_counts())
-
-    # # Distribution of 'HasCrCard'
-    # st.subheader('Distribution of Has Credit Card')
-    # st.bar_chart(data['HasCrCard'].value_counts())
 
 if __name__ == '__main__':
     main()
