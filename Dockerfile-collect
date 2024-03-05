@@ -25,10 +25,10 @@ RUN ls
 # RUN python collect.py
 
 # Ceci définit la commande par défaut pour que le conteneur doit exécuter.
-# ENTRYPOINT ["python"]
+ENTRYPOINT ["python"]
 
 # Cette commande indique à python d'exécuter le script collect.py au démarrage du conteneur.
-# CMD ["collect.py"]
+CMD ["collect.py"]
 
 # Ceci copie votre fichier "churn.csv" suite a l'execution dans le répertoire .data
 RUN cp churn.csv ~/.data/churn.csv
