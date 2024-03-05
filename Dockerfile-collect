@@ -1,19 +1,39 @@
+# Telecharger l'image de python 3.9-slim depuis dockerhib
 FROM python:3.9-slim
 
+# Ceci définit le répertoire "/app" comme répertoire de travail pour toutes les instructions RUN, CMD, ENTRYPOINT ou COPY qui suivent.
 WORKDIR /app
 
+# Ceci copy le fichier requirements.txt dans le conteneur.
 COPY requirements.txt requirements.txt
 
+# Cela install tous les packages répertoriés dans notre fichier requirements.txt.
 RUN pip install -r requirements.txt
 
-COPY ./app/collect .
+# Cela indique à Docker d'écouter sur le port 4000 au moment de l'exécution.
+EXPOSE 4000
 
+# Ceci copie tout ce qui se trouve dans votre répertoire "./app/collect" actuel dans le répertoire "/app" du conteneur.
+COPY ./app/collect /app
+
+# Crée un répertoire .data dans le répertoire du conteneur.
+RUN mkdir ~/.data
+
+# Lister tout les fichiers et répertoire dans le conteneur
 RUN ls
+
+# Ceci définit la commande par défaut pour que le conteneur doit exécuter.
+ENTRYPOINT ["python"]
+
+# Cette commande indique à python d'exécuter le script collect.py au démarrage du conteneur.
+CMD ["collect.py"]
+
+# Ceci copie votre fichier "churn.csv" suite a l'execution dans le répertoire .data
+RUN cp churn.csv ~/.data/churn.csv
+
 
 # COPY . . 
 
-EXPOSE 4000
-
-RUN python collect.py
+# RUN python collect.py
 
 # CMD ["python", "collect.py"] 
