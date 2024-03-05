@@ -43,12 +43,12 @@ jobs:
       - name: Build Docker Image for data pretraitement
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
 
-      # Docker image pour le pretraitement
-      # - name: 'Lancement du BACKEND'
-      #   env:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     python app/backend.py
+      #Docker image pour le pretraitement
+      - name: 'Lancement du BACKEND'
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python app/backend.py
 
       # Docker image pour l'application web
       - name: Build Docker Image for run app web

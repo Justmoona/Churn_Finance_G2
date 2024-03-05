@@ -17,7 +17,7 @@ EXPOSE 4000
 COPY ./app/collect /app
 
 # Crée un répertoire .data dans le répertoire du conteneur.
-RUN mkdir ~/.data
+RUN mkdir data
 
 # Lister tout les fichiers et répertoire dans le conteneur
 RUN ls
@@ -31,7 +31,7 @@ ENTRYPOINT ["python"]
 CMD ["collect.py"]
 
 # Ceci copie votre fichier "churn.csv" suite a l'execution dans le répertoire .data
-RUN cp churn.csv ~/.data/churn.csv
+# RUN cp churn.csv /data/churn.csv
 
 
 # COPY . . 
