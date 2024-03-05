@@ -10,7 +10,7 @@ COPY . .
 
 RUN ls
 
-EXPOSE 3000
+EXPOSE 4000
 
 RUN python app/process/pretraitement_modelisation.py
 
