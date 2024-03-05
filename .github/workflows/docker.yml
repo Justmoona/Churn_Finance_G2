@@ -44,11 +44,11 @@ jobs:
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
 
       # Docker image pour le pretraitement
-      - name: 'Lancement du BACKEND'
-        # env:
-        #   repo_token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python app/backend.py
+      # - name: 'Lancement du BACKEND'
+      #   env:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     python app/backend.py
 
       # Docker image pour l'application web
       - name: Build Docker Image for run app web
@@ -83,6 +83,6 @@ jobs:
         run: docker stop churn_finance_g2_pretraining
 
       - name: Stop Docker Container app
-        # run: docker stop churn_finance_g2_app
+        run: docker stop churn_finance_g2_app
 
 
