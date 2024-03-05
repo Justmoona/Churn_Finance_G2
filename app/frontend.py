@@ -9,9 +9,14 @@ import json
 from streamlit_option_menu import option_menu
 
 # Charger le modele
-rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
-scalar=pickle.load(open('model/scaling.pkl','rb'))
+rfcmodel=pickle.load(open('app/model/rfcmodel.pkl','rb'))
+scalar=pickle.load(open('app/model/scaling.pkl','rb'))
 file_path = 'app/data/churn.csv'  # Replace with the path to your dataset
+
+st.set_page_config(
+    page_title="Churn finance",
+    page_icon="👋",
+)
 
 # Load the dataset
 @st.cache_data
@@ -108,8 +113,8 @@ def main():
         st.image('Images/Customer-Churn.png', use_column_width='auto')
 
         # Affichage de la dataFrame
-        if st.checkbox("Afficher la dataframe", value=True, key="use_container_width"):
-            st.dataframe(data, use_container_width=st.session_state.use_container_width)
+        if st.checkbox("Afficher la dataframe"):
+            st.dataframe(data.head())
 
         # code pour specifier l'emplacement du fichier CSS
         with open("app/statics/style.css") as f:
