@@ -39,7 +39,7 @@ jobs:
 
       # Lancer le conteneur docker pour la collect
       - name: Run Docker Container for collect
-        run: docker run -d -p 4000:4000 churn_finance_g2_collect
+        run: docker run -d -p 2000:2000 churn_finance_g2_collect
 
       # Lancer le conteneur docker pour le pretraitement
       - name: Run Docker Container for preprocessing
@@ -52,17 +52,17 @@ jobs:
       - name: List of Docker images
         run: docker image ls
 
-      # Lister les conteneur actifs
+      # Lister les conteneur
       - name: List of Docker containers
         run: docker ps -a
-
-      # Stoper le conteneur docker pour la collect
-      - name: Stop Docker Container collect
-        run: docker stop churn_finance_g2_collect
 
       # Stoper le conteneur docker pour le pretraitement
       - name: Stop Docker Container preprocessing
         run: docker stop churn_finance_g2_pretraining
+
+      # Stoper le conteneur docker pour la collect
+      - name: Stop Docker Container collect
+        run: docker stop churn_finance_g2_collect
 
       # Lancer le docker-compose
       - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
