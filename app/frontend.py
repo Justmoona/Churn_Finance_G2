@@ -9,8 +9,8 @@ import json
 from streamlit_option_menu import option_menu
 
 # Charger le modele
-rfcmodel=pickle.load(open('app/model/rfcmodel.pkl','rb'))
-scalar=pickle.load(open('app/model/scaling.pkl','rb'))
+rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
+scalar=pickle.load(open('model/scaling.pkl','rb'))
 file_path = 'app/data/churn.csv'  # Replace with the path to your dataset
 
 st.set_page_config(

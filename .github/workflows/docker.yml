@@ -66,4 +66,4 @@ jobs:
 
       # Lancer le docker-compose
       - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
-        run: docker-compose up
+        run: docker-compose up -d

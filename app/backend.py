@@ -11,8 +11,8 @@ from os.path import join, dirname, realpath
 app=Flask(__name__)
 
 # Charger le modele
-rfcmodel=pickle.load(open('app/model/rfcmodel.pkl','rb'))
-scalar=pickle.load(open('app/model/scaling.pkl','rb'))
+rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
+scalar=pickle.load(open('model/scaling.pkl','rb'))
 
 
 # Configuration de la base de données MySQL
