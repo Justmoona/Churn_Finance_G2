@@ -10,10 +10,11 @@ COPY . .
 
 RUN ls
 
+CMD python app/backend.py
+
 EXPOSE 5000
 
-ENTRYPOINT ["python"]
 
-CMD ["app/backend.py"]
+# ENTRYPOINT ["python"]
 
-
+# CMD ["app/backend.py"]
