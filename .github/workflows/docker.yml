@@ -45,8 +45,8 @@ jobs:
 
       # Docker image pour le pretraitement
       - name: 'Lancement du BACKEND'
-        env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python app/backend.py
 
