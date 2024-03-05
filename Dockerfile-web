@@ -12,7 +12,7 @@ COPY . .
 RUN ls
 
 # RUN streamlit run app/frontend.py
-CMD streamlit run app/frontend.py
+RUN streamlit run app/frontend.py
 
 # ENTRYPOINT [ "streamlit","run" ]
 
