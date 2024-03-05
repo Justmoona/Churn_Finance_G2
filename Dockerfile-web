@@ -11,8 +11,10 @@ COPY . .
 
 RUN ls
 
-EXPOSE 5000
+EXPOSE 8501
 
-CMD [ "python", "./app/backend.py" ]
+ENTRYPOINT [ "streamlit","run" ]
+
+CMD ["app/frontend.py"]
 
 

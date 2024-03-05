@@ -1,5 +1,6 @@
 Flask==3.0.2
 streamlit==1.28.1
+streamlit-option-menu
 pandas==2.1.2
 numpy==1.26.1
 seaborn==0.13.1

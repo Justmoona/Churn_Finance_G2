@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - mary
   pull_request:
     branches:
       - main
@@ -18,14 +19,6 @@ jobs:
 
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v3
-
-      # Docker image pour le pretraitement
-      # - name: 'Pretraitement et modelisation'
-      #   env:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     pip install -r requirements.txt
-      #     python app/process/pretraitement_modelisation.py
 
         # run: |
         #   Your ML workflow goes here
@@ -50,9 +43,16 @@ jobs:
       - name: Build Docker Image for data pretraitement
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
 
+      # Docker image pour le pretraitement
+      - name: 'Lancement du BACKEND'
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python app/backend.py
+
       # Docker image pour l'application web
       - name: Build Docker Image for run app web
-        run: docker build -t churn_finance_g2_app -f Dockerfile .
+        run: docker build -t churn_finance_g2_app -f Dockerfile-web .
 
       # Lister les images
       - name: List of Docker images
@@ -65,7 +65,7 @@ jobs:
         run: docker run -d -p 3000:3000 churn_finance_g2_pretraining
       
       - name: Run Docker Container App web
-        run: docker run -d -p 5000:5000 churn_finance_g2_app
+        run: docker run -d -p 8501:8501 churn_finance_g2_app
 
       - name: List of Docker -a AFTER
         run: docker ps -a  
