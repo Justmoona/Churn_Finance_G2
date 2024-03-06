@@ -1,11 +1,18 @@
-name: UIE_M2 - Projet churn finance with CI/CD
+name: UIE_M2 - Projet churn finance with CI/CD deploy
+
+env:
+  DOCKER_USER: ${{secrets.USER_NAME}}
+  DOCKER_PASSWORD: ${{secrets.PASSWORD}}
+  DOCKER_REPO_NAME: ${{secrets.REPOSITORY_DOCKER_HUB}}
+  MON_TEST: ${{secrets.MON_TEST_PWD}}
+
 
 # conditions exécution du Jobs pour la partie intégration continue CI
 on:
   push:
     branches:
       - main
-      - mary
+      - experimentation
   pull_request:
     branches:
       - main
@@ -20,15 +27,6 @@ jobs:
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v3
 
-      #Docker image pour le pretraitement
-      # - name: 'Lancement du BACKEND'
-      #   env:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     pip install -r requirements.txt
-      #     python app/backend.py
-
-
       # Docker image pour la collect de données
       - name: Build Docker Image for data collect
         run: docker build -t churn_finance_g2_collect -f Dockerfile-collect .
@@ -36,6 +34,14 @@ jobs:
       # Docker image pour le pretraitement de données
       - name: Build Docker Image for data preprocessing
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
+
+      # Lancer le docker-compose
+      - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
+        run: docker-compose up --build
+
+      # Lancer le docker-compose
+      - name: Stoper le DOCKER-COMPOSE (WEB, BACK, MYSQL)
+        run: docker-compose stop
 
       # Lancer le conteneur docker pour la collect
       - name: Run Docker Container for collect
@@ -45,9 +51,6 @@ jobs:
       - name: Run Docker Container for preprocessing
         run: docker run -d -p 3000:3000 churn_finance_g2_pretraining
       
-      # - name: Run Docker Container App web
-      #   run: docker run -d -p 8501:8501 churn_finance_g2_web-app
-
       # Lister les images
       - name: List of Docker images
         run: docker image ls
@@ -56,14 +59,3 @@ jobs:
       - name: List of Docker containers
         run: docker ps -a
 
-      # # Stoper le conteneur docker pour la collect
-      # - name: Stop Docker Container collect
-      #   run: docker stop churn_finance_g2_collect
-
-      # # Stoper le conteneur docker pour le pretraitement
-      # - name: Stop Docker Container preprocessing
-      #   run: docker stop churn_finance_g2_pretraining
-
-      # Lancer le docker-compose
-      - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
-        run: docker-compose up -d

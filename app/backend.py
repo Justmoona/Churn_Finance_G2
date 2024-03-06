@@ -1,11 +1,13 @@
 import pickle
 import json
 from flask import Flask,request,app,jsonify,url_for,render_template,redirect
-import numpy as np
-import pandas as pd
 import pymysql
 import os
-from os.path import join, dirname, realpath
+# from os.path import join, dirname, realpath
+# from pydantic import BaseModel
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
+import numpy as np
+import pandas as pd
 
 
 app=Flask(__name__)

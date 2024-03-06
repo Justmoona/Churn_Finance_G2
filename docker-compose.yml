@@ -1,35 +1,39 @@
 version: '3.3'
 
 services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile-web
+      # target: development
+    container_name: churn_finance_g2_web-app
+      # image: churn_finance_g2_web-app
+    volumes:
+      - .:/app
+    command: streamlit run app/frontend.py
+    depends_on:
+      - backend
+    ports:
+      - 8501:8501
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile-back
-      target: development
+      # target: development
     volumes:
       - .:/app
+    command: python app/backend.py
     depends_on:
       # - mysql
       - postgres
     environment:
       # DATABASE_URL: mysql://user:password@mysql:3306/churn_finance
       DATABASE_URL: postgres://user:password@postgres:5432/churn_finance
-      NODE_ENV: development
+      # NODE_ENV: development
       PORT: 5000
     ports:
         - 5000:5000
-
-  streamlit:
-    build:
-      context: .
-      dockerfile: Dockerfile-web
-      target: development
-    container_name: churn_finance_g2_web-app
-      # image: churn_finance_g2_web-app
-    volumes:
-      - .:/app
-    ports:
-      - 8501:8501
 
 
   postgres:
@@ -40,7 +44,7 @@ services:
       POSTGRES_DB: churn_finance
     ports:
       - 35000:5432
-
+ 
   postgres_admin:
     image: dpage/pgadmin4:4.28
     depends_on:
@@ -52,13 +56,14 @@ services:
       - 5050:80
 
   # mysql:
-  #   image: mysql:8.0
+  #   image: mysql:latest
   #   container_name: mysql8
   #   command: --default-authentication-plugin=mysql_native_password
+  #   restart: always
   #   environment:
   #     MYSQL_ROOT_PASSWORD: password
   #     MYSQL_DATABASE: churn_finance
-  #     MYSQL_USER: user
+  #     MYSQL_USER: root
   #     MYSQL_PASSWORD: password
   #   ports:
   #     - 3306:3306
@@ -69,7 +74,7 @@ services:
   #   environment:
   #     PMA_ARBITRARY: 1
   #     PMA_HOST: mysql
-  #     PMA_USER: user
+  #     PMA_USER: root
   #     PMA_PASSWORD: password
   #     UPLOAD_LIMIT: 20M
   #   ports:
