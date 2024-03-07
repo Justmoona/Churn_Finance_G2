@@ -17,37 +17,42 @@ scalar=pickle.load(open('model/scaling.pkl','rb'))
 
 
 # Configuration de la base de données MySQL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'  # Utilisateur MySQL
-app.config['MYSQL_PASSWORD'] = ''  # Mot de passe MySQL
-app.config['MYSQL_DB'] = 'churn_finance'  # Base de données MySQL
+app.config['MYSQL_HOST'] = 'mysql'
+app.config['MYSQL_USER'] = 'user'  # Utilisateur MySQL
+app.config['MYSQL_PASSWORD'] = 'password'  # Mot de passe MySQL
+app.config['MYSQL_DATABASE'] = 'churn_finance'  # Base de données MySQL
 
-# # Connect to the database 
-# conn = psycopg2.connect(database="flask_db", user="user", 
-#                         password="password", host="localhost", port="5432") 
-  
-# # create a cursor 
-# cur = conn.cursor() 
-  
-# # if you already have any table or not id doesnt matter this  
-# # will create a products table for you. 
-# cur.execute( 
-#     '''CREATE TABLE IF NOT EXISTS products (id serial \ 
-#     PRIMARY KEY, name varchar(100), price float);''') 
-  
-# # Insert some data into the table 
-# cur.execute( 
-#     '''INSERT INTO products (name, price) VALUES \ 
-#     ('Apple', 1.99), ('Orange', 0.99), ('Banana', 0.59);''') 
-  
-# # commit the changes 
-# conn.commit() 
-  
-# # close the cursor and connection 
-# cur.close() 
-# conn.close() 
+def get_db():
+    return pymysql.connect(
+        host=app.config['MYSQL_HOST'],
+        user=app.config['MYSQL_USER'],
+        password=app.config['MYSQL_PASSWORD'],
+        db=app.config['MYSQL_DATABASE'],
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
-
+# Création d'un curseur
+cur = get_db().cursor()
+# # Créer uen base de données "data_HR"
+cur.execute("CREATE DATABASE IF NOT EXISTS churn_finance")
+# # Création de la table "products" dans la base de données
+cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.churn (
+    RowNumber INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerId VARCHAR(255),
+    Surname VARCHAR(255),
+    CreditScore INT,
+    Geography VARCHAR(255),
+    Gender VARCHAR(255),
+    Age INT,
+    Tenure INT,
+    Balance FLOAT,
+    NumOfProducts INT,
+    HasCrCard INT,
+    IsActiveMember INT,
+    EstimatedSalary FLOAT,
+    Exited INT
+)''')
+            
 # Mode débogage
 app.config["DEBUG"] = True
 
@@ -56,16 +61,6 @@ UPLOAD_FOLDER = 'app/data'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE']
-
-def get_db():
-    return pymysql.connect(
-        host=app.config['MYSQL_HOST'],
-        user=app.config['MYSQL_USER'],
-        password=app.config['MYSQL_PASSWORD'],
-        db=app.config['MYSQL_DB'],
-        cursorclass=pymysql.cursors.DictCursor
-    )
-
 
 class Data():
     CreditScore: int
@@ -130,7 +125,7 @@ def uploadFiles():
 def predict_api():
     data=request.json['data']
     # data = data.dict()
-    print('Donnees envoyer: => {}'.format(data))
+    return print('Donnees envoyer: => {}'.format(data))
     print(np.array(list(data.values())).reshape(1,-1))
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
     print('Variables d\'entrees: => {}'.format(new_data))

@@ -160,13 +160,29 @@ def main():
                     'IsActiveMember': is_active_member,
                     'EstimatedSalary': estimated_salary
                     }
+                    
 
+#         donnee ={
+#                 "inputs": {
+#                     'CreditScore': credit_score,
+#                     'Geography': geography,
+#                     'Gender': gender,
+#                     'Age': age,
+#                     'Tenure': tenure,
+#                     'Balance': balance,
+#                     'NumOfProducts': num_of_products,
+#                     'HasCrCard': has_cr_card,
+#                     'IsActiveMember': is_active_member,
+#                     'EstimatedSalary': estimated_salary
+#                 }
+# }
         # When the user clicks the predict button
         if st.button('Predict'):
             # preprocess_data(input_data)
-            # response = requests.post("http://127.0.0.1:5000/predict_api", json=input_data)
+            # response = requests.post("http://127.0.0.1:5000/predict_api")
+            # # resultat = response.json()
             # print(response)
-            # prediction =response.text
+            # # prediction =response.text
 
             # Appel de la methode de prediction
             prediction = preprocess_data(input_data)
