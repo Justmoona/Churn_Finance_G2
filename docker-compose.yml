@@ -11,6 +11,8 @@ services:
     volumes:
       - .:/app
     command: streamlit run app/frontend.py
+    security_opt:
+      - seccomp:unconfined
     depends_on:
       - backend
     ports:
@@ -24,6 +26,8 @@ services:
     volumes:
       - .:/app
     command: python app/backend.py
+    security_opt:
+      - seccomp:unconfined
     depends_on:
       # - mysql
       - postgres

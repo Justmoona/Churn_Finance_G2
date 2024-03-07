@@ -7,10 +7,9 @@ import requests
 import json
 from streamlit_option_menu import option_menu
 import os
-
-os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import numpy as np
 import pandas as pd
+
 
 # Charger le modele
 rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))

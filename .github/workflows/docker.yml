@@ -12,7 +12,6 @@ on:
   push:
     branches:
       - main
-      - experimentation
   pull_request:
     branches:
       - main
@@ -35,14 +34,6 @@ jobs:
       - name: Build Docker Image for data preprocessing
         run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
 
-      # Lancer le docker-compose
-      - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
-        run: docker-compose up --build
-
-      # Lancer le docker-compose
-      - name: Stoper le DOCKER-COMPOSE (WEB, BACK, MYSQL)
-        run: docker-compose stop
-
       # Lancer le conteneur docker pour la collect
       - name: Run Docker Container for collect
         run: docker run -d -p 4000:4000 churn_finance_g2_collect
@@ -59,3 +50,32 @@ jobs:
       - name: List of Docker containers
         run: docker ps -a
 
+      # Arreter le conteneur du collect
+      - name: Stop Docker Container collect
+        run: docker stop churn_finance_g2_collect
+
+      # Arreter le conteneur de pretraitement
+      - name: Stop Docker Container pretraining
+        run: docker stop churn_finance_g2_pretraining
+
+      # Lancer le docker-compose
+      - name: Lancer de DOCKER-COMPOSE (WEB, BACK, MYSQL)
+        run: docker-compose build
+
+      # Lancer le docker-compose
+      - name: Stoper le DOCKER-COMPOSE (WEB, BACK, MYSQL)
+        run: docker-compose stop
+
+      - name: Docker login
+        run: | # log into docker hub account
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      
+      - name: Get current date # get the date of the build
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
+
+      - name: Build the Docker image # push The image to the docker hub
+        run: docker build . --file Dockerfile --tag $DOCKER_USER/$DOCKER_REPO_NAME:${{ steps.date.outputs.date }}
+
+      - name: Docker Push
+        run: docker push $DOCKER_USER/$DOCKER_REPO_NAME:${{ steps.date.outputs.date }}
