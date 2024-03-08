@@ -39,7 +39,7 @@ jobs:
 
       # Docker image back
       - name: Build Docker Image back
-        run: docker build -t churn_finance_g2_back image -f Dockerfile-back .
+        run: docker build -t churn_finance_g2_back -f Dockerfile-back .
 
       # Docker image front
       - name: Build Docker Image front
