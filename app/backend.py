@@ -31,23 +31,24 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-cur = get_db().cursor()
+def create_table_prediction():
+    cur = get_db().cursor()
     # Créer uen base de données "data_HR"
-cur.execute("CREATE DATABASE IF NOT EXISTS churn_finance")
-    # Création de la table "products" dans la base de données
-cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.predictions (
-        CreditScore INT,
-        Geography VARCHAR(255),
-        Gender VARCHAR(255),
-        Age INT,
-        Tenure INT,
-        Balance FLOAT,
-        NumOfProducts INT,
-        HasCrCard INT,
-        IsActiveMember INT,
-        EstimatedSalary FLOAT,
-        Exited INT
-    )''')
+    cur.execute("CREATE DATABASE IF NOT EXISTS churn_finance")
+        # Création de la table "products" dans la base de données
+    cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.predictions (
+            CreditScore FLOAT,
+            Geography INT,
+            Gender BOOLEAN,
+            Age FLOAT,
+            Tenure FLOAT,
+            Balance FLOAT,
+            NumOfProducts INT,
+            HasCrCard BOOLEAN,
+            IsActiveMember BOOLEAN,
+            EstimatedSalary FLOAT,
+            Exited FLOAT
+        )''')
 
 
 def create_table():
@@ -82,18 +83,6 @@ UPLOAD_FOLDER = 'app/data'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 methods=['POST', 'PUT', 'GET', 'PATCH', 'DELETE']
-
-class Data():
-    CreditScore: int
-    Geography: str
-    Gender: str
-    Age: int
-    Tenure: int
-    Balance: float
-    NumOfProducts: int
-    HasCrCard: int
-    IsActiveMember: int
-    EstimatedSalary: float
 
 # Methode permettant de stocker le contenu du fichier CSV dans la base de donnee MySQL
 def parseCSV():
@@ -155,29 +144,57 @@ def predict_api():
     return json.dumps(output[0], default=int)
 
 
-
 @app.route('/predict',methods=['POST'])
 def predict():
+    # Recuperation du json provenant du front
     data=request.json['inputs']
     print('Donnees envoyer: => {}'.format(data))
     print(np.array(list(data.values())).reshape(1,-1))
+    # transformer le data redimentionner
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
+    # Stoper les inputs dans un dataframe
     input_df = pd.DataFrame(new_data, index=[0])
     print(input_df)
     print('Variables d\'entrees: => {}'.format(new_data))
+    # Prediction des valeurs
     output=rfcmodel.predict_proba(new_data)[0][1]
     print('Output du model => {}'.format(output))
-
+    # Appel de la methode pour creer la table
+    create_table_prediction()
+    # Insertion des inputs dans la table predictions 
     sql = "INSERT INTO predictions (CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary, Exited) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    value = (input_df.iloc[0, 0],input_df.iloc[0, 1], input_df.iloc[0, 2], input_df.iloc[0, 3], input_df.iloc[0, 4], input_df.iloc[0, 5], input_df.iloc[0, 6], input_df.iloc[0, 7], input_df.iloc[0, 8], input_df.iloc[0, 9], output)
-    # value = (input_df.columns[0:0], input_df.columns[1], input_df.columns[2], input_df.columns[3], input_df.columns[4], input_df.columns[5], input_df.columns[6], input_df.columns[7], input_df.columns[8], input_df.columns[9], output)
-    # value = (input_df[0:0], input_df[0:1], input_df[0:2], input_df[0:3], input_df[0:4], input_df[0:5], input_df[0:6], input_df[0:7], input_df[0:8], input_df[0:9], output)
+    value = (
+        float(input_df.iloc[0, 0]),
+        float(input_df.iloc[0, 1]),
+        float(input_df.iloc[0, 2]),
+        float(input_df.iloc[0, 3]),
+        float(input_df.iloc[0, 4]),
+        float(input_df.iloc[0, 5]),
+        float(input_df.iloc[0, 6]),
+        float(input_df.iloc[0, 7]),
+        float(input_df.iloc[0, 8]),
+        float(input_df.iloc[0, 9]),
+        float(output)
+    )
     print(value)
     cur = get_db().cursor()
     cur.execute(sql, value)
     cur.connection.commit()
     cur.close()
     return jsonify(output)
+
+
+@app.route('/reporting')
+def reporting():
+    # Récupération d'une connexion à la base de données && Création d'un curseur pour exécuter des requêtes SQL
+    cur = get_db().cursor()
+    cur.execute("SELECT * FROM predictions")
+    cur.connection.commit()
+    predictions = cur.fetchall()
+    cur.close()
+    return jsonify(predictions)
+
+
 
 
 if __name__=="__main__":

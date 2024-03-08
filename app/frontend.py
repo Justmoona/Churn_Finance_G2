@@ -173,9 +173,16 @@ def main():
     #     st.write("page upload file...")
 
     if selected == "Reporting":
-        data = load_data(file_path)
-        # Data visualization
         st.header('Data Visualization')
+
+        # data = load_data(file_path)
+        req = requests.get("http://host.docker.internal:5000/reporting")
+        resultat = req.json()
+        data = pd.DataFrame(resultat)
+        # Affichage de la dataFrame
+        if st.checkbox("Afficher la table"):
+            st.dataframe(data.head())
+
         # Select visualization type
         visualization_type = st.selectbox('Select Visualization:', ['Churn Distribution', 'Age Distribution by Churn',
                                                                     'Balance Distribution by Churn', 'Geography Distribution',
@@ -198,6 +205,19 @@ def main():
             plot_categorical_distribution(data, 'HasCrCard')
 
 
+        fig, ax = plt.subplots()
+        n_bins = st.number_input(
+            label="Choisir un nombre de bins",
+            min_value=10,
+            value=20
+        )
+        ax.hist(data.Age, bins=n_bins)
+        title=st.text_input(label="Saisir le titre du graphe")
+        st.title(title)
+        st.pyplot(fig)
+
+
+st.sidebar.header("les parametres d'entrée")
 
 if __name__ == '__main__':
     main()
