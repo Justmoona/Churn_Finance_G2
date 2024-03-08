@@ -10,8 +10,10 @@ COPY . .
 
 RUN ls
 
-EXPOSE 3000
+RUN python collect.py
 
 RUN python app/process/pretraitement_modelisation.py
+
+EXPOSE 3000
 
 # CMD ["python", "app/process/pretraitement_modelisation.py"]

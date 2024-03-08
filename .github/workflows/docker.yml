@@ -28,13 +28,13 @@ jobs:
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v3
 
-      # Docker image pour la collect de données
-      - name: Build Docker Image for data collect
-        run: docker build -t churn_finance_g2_collect -f Dockerfile-collect .
+      # # Docker image pour la collect de données
+      # - name: Build Docker Image for data collect
+      #   run: docker build -t churn_finance_g2_collect -f Dockerfile-collect .
 
-      # Docker image pour le pretraitement de données
+      # Docker image pour la collect et le pretraitement de données
       - name: Build Docker Image for data preprocessing
-        run: docker build -t churn_finance_g2_pretraining -f Dockerfile-pt-m .
+        run: docker build -t churn_finance_g2_c_p -f Dockerfile-c-pt-m .
 
       # Docker image back
       - name: Build Docker Image back
@@ -48,13 +48,13 @@ jobs:
       - name: List of Docker images
         run: docker image ls
 
-      # Lancer le conteneur docker pour la collect
-      - name: Run Docker Container for collect
-        run: docker run -d -p 4000:4000 churn_finance_g2_collect
+      # # Lancer le conteneur docker pour la collect
+      # - name: Run Docker Container for collect
+      #   run: docker run -d -p 4000:4000 churn_finance_g2_collect
 
       # Lancer le conteneur docker pour le pretraitement
-      - name: Run Docker Container for preprocessing
-        run: docker run -d -p 3000:3000 churn_finance_g2_pretraining
+      - name: Run Docker Container for collect and preprocessing
+        run: docker run -d -p 3000:3000 churn_finance_g2_c_p
 
       # Lancer le conteneur docker pour la collect
       - name: Run Docker Container for back
@@ -71,7 +71,7 @@ jobs:
       # Filtrer l'ID des conteneurs pour les images suivantes
       - name: List of Docker -q AFTER
         run: |
-          docker ps --filter "ancestor=churn_finance_g2_collect" --filter "ancestor=churn_finance_g2_pretraining" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q
+          docker ps --filter "ancestor=churn_finance_g2_c_p" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q
 
       # Me connecter sur dockerHub
       - name: Docker login
@@ -101,7 +101,7 @@ jobs:
 
       # Arreter le conteneur filter
       - name: Stop Docker Container FRONT and BACK
-        run: docker stop $(docker ps --filter "ancestor=churn_finance_g2_collect" --filter "ancestor=churn_finance_g2_pretraining" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
+        run: docker stop $(docker ps  --filter "ancestor=churn_finance_g2_c_p" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
 
       # # Arreter le conteneur du collect
       # - name: Stop Docker Container collect

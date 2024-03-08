@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 EXPOSE 4000
 
 # Ceci copie tout ce qui se trouve dans votre répertoire "./app/collect" actuel dans le répertoire "/app" du conteneur.
-COPY ./app/collect /app
+COPY ./app /app
 
 # Lister tout les fichiers et répertoire dans le conteneur
 RUN ls
