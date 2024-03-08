@@ -8,7 +8,6 @@ env:
   DOCKER_REPO_NAME_FRONT: ${{secrets.REPOSITORY_DOCKER_HUB_FRONT}}
   MON_TEST: ${{secrets.MON_TEST_PWD}}
 
-
 # conditions exécution du Jobs pour la partie intégration continue CI
 on:
   push:
