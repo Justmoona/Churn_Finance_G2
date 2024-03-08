@@ -70,7 +70,8 @@ jobs:
 
       # Filtrer l'ID des conteneurs pour les images suivantes
       - name: List of Docker -q AFTER
-        run: docker ps --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q
+        run: |
+          docker ps --filter "ancestor=churn_finance_g2_collect" --filter "ancestor=churn_finance_g2_pretraining" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q
 
       # Me connecter sur dockerHub
       - name: Docker login
@@ -100,15 +101,15 @@ jobs:
 
       # Arreter le conteneur filter
       - name: Stop Docker Container FRONT and BACK
-        run: docker stop $(docker ps --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
+        run: docker stop $(docker ps --filter "ancestor=churn_finance_g2_collect" --filter "ancestor=churn_finance_g2_pretraining" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
 
-      # Arreter le conteneur du collect
-      - name: Stop Docker Container collect
-        run: docker stop churn_finance_g2_collect
+      # # Arreter le conteneur du collect
+      # - name: Stop Docker Container collect
+      #   run: docker stop churn_finance_g2_collect
 
-      # Arreter le conteneur de pretraitement
-      - name: Stop Docker Container pretraining
-        run: docker stop churn_finance_g2_pretraining
+      # # Arreter le conteneur de pretraitement
+      # - name: Stop Docker Container pretraining
+      #   run: docker stop churn_finance_g2_pretraining
 
 
 
