@@ -16,14 +16,16 @@
   - Exited: abandonné ou pas ? (0 = Non, 1 = Oui). C'est la variable que nous cherchons à prédire en utilisant les autres fonctionnalités.
 
 
-## Procedure suivante nous montre comment executer le projet a l'aide de docker et docker-compose
+### Procedure suivante nous montre comment executer le projet a l'aide de docker et docker-compose
   * Etape1: Installer docker desktop
-  * Etape2: Il suffit de ce placer à la racine du projet et execute les deux(2) commandes suivantes:
+  * Etape2: Cloner le projet sur le repository
+  * Etape3: Il suffit de ce placer à la racine du répertoire du projet et execute les deux(2) commandes suivantes:
 
 - D'abord:
 ``` Command
 docker-compose build
 ```
+Note: Le processus de télechargement des images docker prend beaucoup de temps.
 
 - Ensuite:
 ``` Command
@@ -32,7 +34,7 @@ docker-compose up
 
 
 
-## Procedure suivante nous montre comment executer le projet en local avec un env. isoler
+### Procedure suivante nous montre comment executer le projet en local avec un env. isoler
 
 #### Creer un nouveau environnement (utiliser la version de python 3.9)
   Réference (https://realpython.com/python-virtual-environments-a-primer/#create-it)

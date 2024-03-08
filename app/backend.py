@@ -31,28 +31,49 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-# Création d'un curseur
 cur = get_db().cursor()
-# # Créer uen base de données "data_HR"
+    # Créer uen base de données "data_HR"
 cur.execute("CREATE DATABASE IF NOT EXISTS churn_finance")
-# # Création de la table "products" dans la base de données
-cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.churn (
-    RowNumber INT AUTO_INCREMENT PRIMARY KEY,
-    CustomerId VARCHAR(255),
-    Surname VARCHAR(255),
-    CreditScore INT,
-    Geography VARCHAR(255),
-    Gender VARCHAR(255),
-    Age INT,
-    Tenure INT,
-    Balance FLOAT,
-    NumOfProducts INT,
-    HasCrCard INT,
-    IsActiveMember INT,
-    EstimatedSalary FLOAT,
-    Exited INT
-)''')
-            
+    # Création de la table "products" dans la base de données
+cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.predictions (
+        CreditScore INT,
+        Geography VARCHAR(255),
+        Gender VARCHAR(255),
+        Age INT,
+        Tenure INT,
+        Balance FLOAT,
+        NumOfProducts INT,
+        HasCrCard INT,
+        IsActiveMember INT,
+        EstimatedSalary FLOAT,
+        Exited INT
+    )''')
+
+
+def create_table():
+    # Création d'un curseur
+    cur = get_db().cursor()
+    # Créer uen base de données "data_HR"
+    cur.execute("CREATE DATABASE IF NOT EXISTS churn_finance")
+    # Création de la table "products" dans la base de données
+    cur.execute('''CREATE TABLE IF NOT EXISTS churn_finance.churn (
+        RowNumber INT AUTO_INCREMENT PRIMARY KEY,
+        CustomerId VARCHAR(255),
+        Surname VARCHAR(255),
+        CreditScore INT,
+        Geography VARCHAR(255),
+        Gender VARCHAR(255),
+        Age INT,
+        Tenure INT,
+        Balance FLOAT,
+        NumOfProducts INT,
+        HasCrCard INT,
+        IsActiveMember INT,
+        EstimatedSalary FLOAT,
+        Exited INT
+    )''')
+
+
 # Mode débogage
 app.config["DEBUG"] = True
 
@@ -82,6 +103,7 @@ def parseCSV():
       csvData = pd.read_csv('app/data/churn.csv')
       # Nous allons parcourez chauqes du fichier CSV
       for i,row in csvData.iterrows():
+             create_table()
              sql = "INSERT INTO churn (RowNumber, CustomerId, Surname, CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary, Exited) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
              value = (row['RowNumber'], row['CustomerId'], row['Surname'], row['CreditScore'], row['Geography'], row['Gender'], row['Age'], row['Tenure'], row['Balance'], row['NumOfProducts'], row['HasCrCard'], row['IsActiveMember'], row['EstimatedSalary'], row['Exited'])
             #  print(value)
@@ -91,8 +113,6 @@ def parseCSV():
              cur.connection.commit()
              cur.close()
              value = (row['RowNumber'], row['CustomerId'], row['Surname'], row['CreditScore'], row['Geography'], row['Gender'], row['Age'], row['Tenure'], row['Balance'], row['NumOfProducts'], row['HasCrCard'], row['IsActiveMember'], row['EstimatedSalary'], row['Exited'])
-
-
 
 # URL par defaut
 @app.route('/')
@@ -125,7 +145,7 @@ def uploadFiles():
 def predict_api():
     data=request.json['data']
     # data = data.dict()
-    return print('Donnees envoyer: => {}'.format(data))
+    print('Donnees envoyer: => {}'.format(data))
     print(np.array(list(data.values())).reshape(1,-1))
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
     print('Variables d\'entrees: => {}'.format(new_data))
@@ -133,6 +153,31 @@ def predict_api():
     print('Output du model => {}'.format(output[0]))
     # return jsonify(output[0])
     return json.dumps(output[0], default=int)
+
+
+
+@app.route('/predict',methods=['POST'])
+def predict():
+    data=request.json['inputs']
+    print('Donnees envoyer: => {}'.format(data))
+    print(np.array(list(data.values())).reshape(1,-1))
+    new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
+    input_df = pd.DataFrame(new_data, index=[0])
+    print(input_df)
+    print('Variables d\'entrees: => {}'.format(new_data))
+    output=rfcmodel.predict_proba(new_data)[0][1]
+    print('Output du model => {}'.format(output))
+
+    sql = "INSERT INTO predictions (CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary, Exited) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    value = (input_df.iloc[0, 0],input_df.iloc[0, 1], input_df.iloc[0, 2], input_df.iloc[0, 3], input_df.iloc[0, 4], input_df.iloc[0, 5], input_df.iloc[0, 6], input_df.iloc[0, 7], input_df.iloc[0, 8], input_df.iloc[0, 9], output)
+    # value = (input_df.columns[0:0], input_df.columns[1], input_df.columns[2], input_df.columns[3], input_df.columns[4], input_df.columns[5], input_df.columns[6], input_df.columns[7], input_df.columns[8], input_df.columns[9], output)
+    # value = (input_df[0:0], input_df[0:1], input_df[0:2], input_df[0:3], input_df[0:4], input_df[0:5], input_df[0:6], input_df[0:7], input_df[0:8], input_df[0:9], output)
+    print(value)
+    cur = get_db().cursor()
+    cur.execute(sql, value)
+    cur.connection.commit()
+    cur.close()
+    return jsonify(output)
 
 
 if __name__=="__main__":

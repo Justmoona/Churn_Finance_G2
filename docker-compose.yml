@@ -40,25 +40,6 @@ services:
         - 5000:5000
 
 
-  # postgres:
-  #   image: postgres:10.4
-  #   environment:
-  #     POSTGRES_USER: user
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_DB: churn_finance
-  #   ports:
-  #     - 35000:5432
- 
-  # postgres_admin:
-  #   image: dpage/pgadmin4:4.28
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: password
-  #   ports:
-  #     - 5050:80
-
   mysql:
     image: mysql:latest
     container_name: mysql8
@@ -71,7 +52,6 @@ services:
       MYSQL_DATABASE: churn_finance
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-      # MYSQL_HOST: localhost
     ports:
       - 3306:3306
 
@@ -86,3 +66,4 @@ services:
       UPLOAD_LIMIT: 20M
     ports:
     - 8899:80
+    

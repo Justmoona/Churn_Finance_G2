@@ -27,21 +27,6 @@ def load_data(file_path):
     data = pd.read_csv(file_path)
     return data
 
-# Function to preprocess user input
-def preprocess_data(input_data):
-    print('Donnees envoyer: => {}'.format(input_data))
-    print(np.array(list(input_data.values())).reshape(1,-1))
-    new_data=scalar.transform(np.array(list(input_data.values())).reshape(1,-1))
-    print('Variables d\'entrees: => {}'.format(new_data))
-    # output=rfcmodel.predict(new_data)
-    st.subheader("Résultat")
-    st.write("*Prediction:*")
-    # output=rfcmodel.predict_proba(new_data)[0, 1]
-    output=rfcmodel.predict_proba(new_data)[0][1]
-    print('Output du model => {}'.format(output))
-    return output
-
-
 # Bout de code permettant de desactiver l'avertisement sur les   
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -86,8 +71,8 @@ def plot_categorical_distribution(data, column):
 # Streamlit interface
 def main():
     # horizontal menu
-    selected = option_menu(None, ["Home", "Upload csv", "Reporting", 'Settings'], 
-        icons=['house', 'cloud-upload', "list-task", 'gear'], 
+    selected = option_menu(None, ["Home", "Reporting"], 
+        icons=['house', "list-task"], 
         menu_icon="cast", default_index=0, orientation="horizontal")
     selected
 
@@ -111,7 +96,7 @@ def main():
         # Load the dataset
         data = load_data(file_path)
 
-        st.title('📈 Churn Prediction')
+        st.title('📈 Churn prediction')
         # st.subheader("⏱ Loan Prediction")
         st.image('Images/Customer-Churn.png', use_column_width='auto')
 
@@ -149,7 +134,9 @@ def main():
         gender = 1 if gender == 'Homme' else 0
 
 
-        input_data = {'CreditScore': credit_score,
+        donnee ={
+                "inputs": {
+                    'CreditScore': credit_score,
                     'Geography': geography,
                     'Gender': gender,
                     'Age': age,
@@ -159,51 +146,31 @@ def main():
                     'HasCrCard': has_cr_card,
                     'IsActiveMember': is_active_member,
                     'EstimatedSalary': estimated_salary
-                    }
-                    
-
-#         donnee ={
-#                 "inputs": {
-#                     'CreditScore': credit_score,
-#                     'Geography': geography,
-#                     'Gender': gender,
-#                     'Age': age,
-#                     'Tenure': tenure,
-#                     'Balance': balance,
-#                     'NumOfProducts': num_of_products,
-#                     'HasCrCard': has_cr_card,
-#                     'IsActiveMember': is_active_member,
-#                     'EstimatedSalary': estimated_salary
-#                 }
-# }
-        # When the user clicks the predict button
+                }
+}
         if st.button('Predict'):
-            # preprocess_data(input_data)
-            # response = requests.post("http://127.0.0.1:5000/predict_api")
-            # # resultat = response.json()
-            # print(response)
-            # # prediction =response.text
-
-            # Appel de la methode de prediction
-            prediction = preprocess_data(input_data)
-            churn = prediction >= 0.5
-            output_prob = float(prediction)
+            response = requests.post("http://host.docker.internal:5000/predict", json=donnee).json()
+            print(response)
+            churn = response >= 0.5
+            output_prob = float(response)
             output = bool(churn)
             if output == False:
+                st.subheader("Résultat")
+                st.write("*Prediction:*")
                 st.write("<span class='diagnosis benign'>Ce client devrait rester</span>", unsafe_allow_html=True)
                 # st.write(f"Probabilité churn (en pourcentage): {output_prob} %")
                 st.write("**Probabilité churn (en pourcentage)**",round(output_prob*100,2),"%")
                 # st.success('Le client devrait rester, avec une probabilité de {0} %'.format(output_prob))
             else:
+                st.subheader("Résultat")
+                st.write("*Prediction:*")
                 # st.write("<span class='diagnosis malicious'>On s’attend à ce que le client se désabonne</span>", unsafe_allow_html=True)
                 st.warning('On s’attend à ce que le client se désabonne')
                 st.write("**Probabilité (en pourcentage)**",round(output_prob*100,2),"%")
 
 
-
-
-    if selected == "Upload csv":
-        st.write("page upload file...")
+    # if selected == "Upload csv":
+    #     st.write("page upload file...")
 
     if selected == "Reporting":
         data = load_data(file_path)
