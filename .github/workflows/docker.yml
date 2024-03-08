@@ -14,6 +14,7 @@ on:
   push:
     branches:
       - main
+      - experimentation
   pull_request:
     branches:
       - main
@@ -113,14 +114,14 @@ jobs:
 
 
 
-# Processus du pipeline CD
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+# # Processus du pipeline CD
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Deploy
-      env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOCK_URL }}
-      run: |
-        curl "$deploy_url"
+#     steps:
+#     - name: Deploy
+#       env:
+#           deploy_url: ${{ secrets.RENDER_DEPLOY_HOCK_URL }}
+#       run: |
+#         curl "$deploy_url"
