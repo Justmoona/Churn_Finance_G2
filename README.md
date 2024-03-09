@@ -18,7 +18,7 @@
 
 ### Procedure suivante nous montre comment executer le projet a l'aide de docker et docker-compose
   * Etape1: Installer docker desktop
-  * Etape2: Cloner le projet sur le repository
+  * Etape2: Cloner le projet sur le repository (branch main)
   * Etape3: Il suffit de ce placer à la racine du répertoire du projet et execute les deux(2) commandes suivantes:
 
 - D'abord:
