@@ -44,15 +44,15 @@ jobs:
       - name: List of Docker images
         run: docker image ls
 
-      # Lancer le conteneur docker
+      # Lancer le conteneur docker containeur collect pretraining modeling
       - name: Run Docker Container for collect pretraining and modeling
         run: docker run -d -p 4000:4000 churn_finance_g2_c_p_m
 
-      # Lancer le conteneur docker pour la collect
+      # Lancer le conteneur docker pour le back
       - name: Run Docker Container for back
         run: docker run -d -p 5000:5000 churn_finance_g2_back
 
-      # Lancer le conteneur docker pour la collect
+      # Lancer le conteneur docker pour le front
       - name: Run Docker Container for front
         run: docker run -d -p 8501:8501 churn_finance_g2_front
 

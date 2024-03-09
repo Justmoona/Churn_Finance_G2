@@ -222,7 +222,7 @@ def main():
         # st.pyplot(fig)
         st.plotly_chart(fig)
 
-        st.header('Linéariter entre les variables')
+        st.header('Linéarité entre les variables')
         # num_cols = data['Age', 'CreditScore', 'Balance', 'EstimatedSalary']
         var_x = st.selectbox("Variable Abscisse", data.columns.to_list())
         var_y = st.selectbox("Variable Ordonnée", data.columns.to_list())
