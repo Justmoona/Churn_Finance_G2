@@ -13,7 +13,7 @@ on:
   push:
     branches:
       - main
-      - experimentation
+      # - experimentation
   pull_request:
     branches:
       - main
@@ -28,12 +28,8 @@ jobs:
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v3
 
-      # # Docker image pour la collect de données
-      # - name: Build Docker Image for data collect
-      #   run: docker build -t churn_finance_g2_collect -f Dockerfile-collect .
-
       # Docker image pour la collect et le pretraitement de données
-      - name: Build Docker Image for data preprocessing
+      - name: Build Docker Image for collect pretraining and modeling
         run: docker build -t churn_finance_g2_c_p_m -f Dockerfile-c-pt-m .
 
       # Docker image back
@@ -47,10 +43,6 @@ jobs:
       # Lister les images
       - name: List of Docker images
         run: docker image ls
-
-      # # Lancer le conteneur docker pour la collect
-      # - name: Run Docker Container for collect
-      #   run: docker run -d -p 4000:4000 churn_finance_g2_collect
 
       # Lancer le conteneur docker
       - name: Run Docker Container for collect pretraining and modeling

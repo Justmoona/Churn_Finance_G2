@@ -1,7 +1,6 @@
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
-# import numpy as np
 import pickle
 import requests
 import json
@@ -9,7 +8,7 @@ from streamlit_option_menu import option_menu
 import os
 import numpy as np
 import pandas as pd
-
+import plotly_express as px
 
 # Charger le modele
 rfcmodel=pickle.load(open('model/rfcmodel.pkl','rb'))
@@ -57,6 +56,14 @@ def plot_balance_distribution(data):
     plt.ylabel('Count')
     st.pyplot()
 
+def plot_subplot_distribution(data):
+    count = data["Exited"].value_counts()
+    plt.subplot(1,2,2)
+    plt.pie(count.values, labels=count.index, autopct="%1.1f%%",colors=sns.set_palette("Set2"),
+        textprops={"fontweight":"black"},explode=[0,0.1])
+    plt.title("Distribution des prédictions",fontweight="black",size=15,pad=20)
+    st.pyplot()
+
 # Function to plot categorical variable distribution by churn
 def plot_categorical_distribution(data, column):
     plt.figure(figsize=(10, 6))
@@ -96,13 +103,13 @@ def main():
         # Load the dataset
         data = load_data(file_path)
 
-        st.title('📈 Churn prediction')
-        # st.subheader("⏱ Loan Prediction")
-        st.image('Images/Customer-Churn.png', use_column_width='auto')
-
         # Affichage de la dataFrame
         if st.checkbox("Afficher la dataframe"):
             st.dataframe(data.head())
+
+        st.title('📈 Churn prediction')
+        # st.subheader("⏱ Loan Prediction")
+        st.image('Images/Customer-Churn.png', use_column_width='auto')
 
         # code pour specifier l'emplacement du fichier CSS
         with open("app/statics/style.css") as f:
@@ -124,15 +131,8 @@ def main():
         # Map radio button responses to binary values
         is_active_member = 1 if is_active_member == 'Yes' else 0
         has_cr_card = 1 if has_cr_card == 'Yes' else 0
-        if geography == 'France':
-            geography = 0
-        elif geography == 'Germany':
-            geography = 1
-        else:
-            geography = 2
-        
+        geography = 0 if geography == 'France' else 1 if geography == 'Germany' else 2
         gender = 1 if gender == 'Homme' else 0
-
 
         donnee ={
                 "inputs": {
@@ -147,7 +147,8 @@ def main():
                     'IsActiveMember': is_active_member,
                     'EstimatedSalary': estimated_salary
                 }
-}
+            }
+
         if st.button('Predict'):
             response = requests.post("http://host.docker.internal:5000/predict", json=donnee).json()
             print(response)
@@ -157,7 +158,7 @@ def main():
             if output == False:
                 st.subheader("Résultat")
                 st.write("*Prediction:*")
-                st.write("<span class='diagnosis benign'>Ce client devrait rester</span>", unsafe_allow_html=True)
+                st.write("<span class='diagnosis benign'>Ce client devrait rester :full_moon_with_face:</span>", unsafe_allow_html=True)
                 # st.write(f"Probabilité churn (en pourcentage): {output_prob} %")
                 st.write("**Probabilité churn (en pourcentage)**",round(output_prob*100,2),"%")
                 # st.success('Le client devrait rester, avec une probabilité de {0} %'.format(output_prob))
@@ -165,7 +166,7 @@ def main():
                 st.subheader("Résultat")
                 st.write("*Prediction:*")
                 # st.write("<span class='diagnosis malicious'>On s’attend à ce que le client se désabonne</span>", unsafe_allow_html=True)
-                st.warning('On s’attend à ce que le client se désabonne')
+                st.warning('On s’attend à ce que le client se désabonne :walking:') 
                 st.write("**Probabilité (en pourcentage)**",round(output_prob*100,2),"%")
 
 
@@ -173,23 +174,26 @@ def main():
     #     st.write("page upload file...")
 
     if selected == "Reporting":
-        st.header('Data Visualization')
         # data = load_data(file_path)
         req = requests.get("http://host.docker.internal:5000/reporting")
         resultat = req.json()
         data = pd.DataFrame(resultat)
+        
         # Affichage de la dataFrame
-        if st.checkbox("Afficher la table"):
+        if st.checkbox("Afficher la table predictions"):
             st.dataframe(data.head())
+        st.header(':bar_chart: Data Visualization')
 
         # Select visualization type
-        visualization_type = st.selectbox('Select Visualization:', ['Churn Distribution', 'Age Distribution by Churn',
+        visualization_type = st.selectbox('Select Visualization:', ['Churn Distribution hist', 'Churn Distribution subplot','Age Distribution by Churn',
                                                                     'Balance Distribution by Churn', 'Geography Distribution',
                                                                     'Gender Distribution', 'NumOfProducts Distribution',
                                                                     'HasCrCard Distribution'])
         # Plot selected visualization
-        if visualization_type == 'Churn Distribution':
+        if visualization_type == 'Churn Distribution hist':
             plot_churn_distribution(data)
+        if visualization_type == 'Churn Distribution subplot':
+            plot_subplot_distribution(data)
         elif visualization_type == 'Age Distribution by Churn':
             plot_age_distribution(data)
         elif visualization_type == 'Balance Distribution by Churn':
@@ -204,19 +208,35 @@ def main():
             plot_categorical_distribution(data, 'HasCrCard')
 
 
+        st.header('Graphiques')
         fig, ax = plt.subplots()
         n_bins = st.number_input(
             label="Choisir un nombre de bins",
             min_value=10,
             value=20
         )
-        ax.hist(data.Age, bins=n_bins)
+        select = st.selectbox('Column', ('CreditScore','Geography','Age', 'Tenure','Balance', 'Gender','NumOfProducts','HasCrCard','IsActiveMember','EstimatedSalary', 'Exited'))
+        ax.hist(data[select], bins=n_bins)
         title=st.text_input(label="Saisir le titre du graphe")
         st.title(title)
-        st.pyplot(fig)
+        # st.pyplot(fig)
+        st.plotly_chart(fig)
+
+        st.header('Linéariter entre les variables')
+        # num_cols = data['Age', 'CreditScore', 'Balance', 'EstimatedSalary']
+        var_x = st.selectbox("Variable Abscisse", data.columns.to_list())
+        var_y = st.selectbox("Variable Ordonnée", data.columns.to_list())
+
+        fig2 = px.scatter(
+            data_frame=data,
+            x=var_x,
+            y=var_y,
+            title=str(var_y) + " VS " + str(var_x)
+        )
+        st.plotly_chart(fig2)
 
 
-st.sidebar.header("les parametres d'entrée")
+st.sidebar.header("Les parametres d'entrée")
 
 if __name__ == '__main__':
     main()

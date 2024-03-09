@@ -5,9 +5,6 @@ import pymysql
 import numpy as np
 import pandas as pd
 import os
-# import psycopg2
-# from os.path import join, dirname, realpath
-# from pydantic import BaseModel
 
 app=Flask(__name__)
 
@@ -49,7 +46,6 @@ def create_table_prediction():
             EstimatedSalary FLOAT,
             Exited BOOLEAN
         )''')
-
 
 def create_table():
     # Création d'un curseur
@@ -152,8 +148,8 @@ def predict():
     print(np.array(list(data.values())).reshape(1,-1))
     # transformer le data redimentionner
     new_data=scalar.transform(np.array(list(data.values())).reshape(1,-1))
-    # Stoper les inputs dans un dataframe
-    input_df = pd.DataFrame(new_data, index=[0])
+    # Stoper les inputs dans un dataframe 
+    input_df = pd.DataFrame(new_data)
     print(input_df)
     print('Variables d\'entrees: => {}'.format(new_data))
     # Prediction des valeurs
@@ -161,22 +157,13 @@ def predict():
     print('Output du model => {}'.format(output))
     # Appel de la methode pour creer la table
     create_table_prediction()
+    # Revenir a l'echelle initial 
+    inv_tr = scalar.inverse_transform(new_data)
+    print('Echelle initial: => {}'.format(inv_tr))
     # Insertion des inputs dans la table predictions 
     sql = "INSERT INTO predictions (CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary, Exited) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    value = (
-        float(input_df.iloc[0, 0]),
-        float(input_df.iloc[0, 1]),
-        float(input_df.iloc[0, 2]),
-        float(input_df.iloc[0, 3]),
-        float(input_df.iloc[0, 4]),
-        float(input_df.iloc[0, 5]),
-        float(input_df.iloc[0, 6]),
-        float(input_df.iloc[0, 7]),
-        float(input_df.iloc[0, 8]),
-        float(input_df.iloc[0, 9]),
-        float(output)
-    )
-    print(value)
+    value = (inv_tr[0][0], inv_tr[0][1], inv_tr[0][2], inv_tr[0][3], inv_tr[0][4], round(float(inv_tr[0][5]), 2), inv_tr[0][6], inv_tr[0][7], inv_tr[0][8], round(float(inv_tr[0][9]), 2), output)
+    print(value) 
     cur = get_db().cursor()
     cur.execute(sql, value)
     cur.connection.commit()
