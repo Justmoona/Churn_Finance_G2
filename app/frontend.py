@@ -174,7 +174,6 @@ def main():
 
     if selected == "Reporting":
         st.header('Data Visualization')
-
         # data = load_data(file_path)
         req = requests.get("http://host.docker.internal:5000/reporting")
         resultat = req.json()

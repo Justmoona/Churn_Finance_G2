@@ -47,7 +47,7 @@ def create_table_prediction():
             HasCrCard BOOLEAN,
             IsActiveMember BOOLEAN,
             EstimatedSalary FLOAT,
-            Exited FLOAT
+            Exited BOOLEAN
         )''')
 
 

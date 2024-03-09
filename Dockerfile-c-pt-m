@@ -1,19 +1,25 @@
+# Telecharger l'image de python 3.9-slim depuis dockerhib
 FROM python:3.9-slim
 
+# Ceci définit le répertoire "/app" comme répertoire de travail pour toutes les instructions RUN, CMD, ENTRYPOINT ou COPY qui suivent.
 WORKDIR /app
 
+# Ceci copy le fichier requirements.txt dans le conteneur.
 COPY requirements.txt requirements.txt
 
+# Cela install tous les packages répertoriés dans notre fichier requirements.txt.
 RUN pip install -r requirements.txt
 
-COPY . . 
+# Ceci copie tout ce qui se trouve dans votre répertoire actuel dans le répertoire "/app" du conteneur.
+COPY . .
 
+# Lister tout les fichiers et répertoire dans le conteneur
 RUN ls
 
-RUN python collect.py
+# La command d'execution
+RUN python app/collect/collect.py
 
 RUN python app/process/pretraitement_modelisation.py
 
-EXPOSE 3000
-
-# CMD ["python", "app/process/pretraitement_modelisation.py"]
+# Cela indique à Docker d'écouter sur le port 4000 au moment de l'exécution.
+EXPOSE 4000
