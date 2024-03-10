@@ -26,12 +26,12 @@ services:
       - key: DATABASE_URL
         fromService:
           name: churn-finance-g2-mysql
-          type: database
+          type: mysql
           property: connectionString
     # ports:
     #   - 5000:5000
 
-  - type: database
+  - type: mysql
     name: churn-finance-g2-mysql
     envVars:
       - key: MYSQL_ROOT_PASSWORD
