@@ -2,12 +2,13 @@ services:
   - type: web
     env: streamlit
     name: churn-finance-g2-streamlit
+    repo: https://github.com/Justmoona/Churn_Finance_G2.git
     buildCommand: streamlit run app/frontend.py
     envVars:
       - key: DATABASE_URL
         fromService:
           name: churn-finance-g2-mysql
-          type: database
+          type: web
           property: connectionString
     routes:
       - type: rewrite
@@ -19,6 +20,7 @@ services:
   - type: web
     env: python
     name: churn-finance-g2-backend
+    repo: https://github.com/Justmoona/Churn_Finance_G2.git
     buildCommand: python app/backend.py
     envVars:
       - key: DATABASE_URL
