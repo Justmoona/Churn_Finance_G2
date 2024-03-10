@@ -16,7 +16,7 @@
   - Exited: abandonné ou pas ? (0 = Non, 1 = Oui). C'est la variable que nous cherchons à prédire en utilisant les autres fonctionnalités.
 
 
-### Procedure suivante nous montre comment executer le projet a l'aide de docker et docker-compose
+###  Procédure 1 : Suivez les étapes suivantes qui vous montrent comment exécuter le projet à l'aide de docker et docker-compose
   * Etape1: Installer docker desktop
   * Etape2: Cloner le projet sur le repository (branch main)
   * Etape3: Il suffit de ce placer à la racine du répertoire du projet et execute les deux(2) commandes suivantes:
@@ -33,30 +33,56 @@ docker-compose up
 ```
 
 
+### Procédure 2 : Récupérer l'image sur docker Hub
+  * Etape1: Installer docker desktop
+  * Etape2: Aller sur le site de dockerhub (https://hub.docker.com/explore)
+  * Etape3: Dans la barre de recherche, recherchez "churn_finance_back" (pour l'image du backend) ou "churn_finance_front" (pour l'image du frontend)
+  * Etape4: Faire un pull de l'image
+    Note: Spécifier le tag.
 
-### Procedure suivante nous montre comment executer le projet en local avec un env. isoler
+  ``` Command
+docker pull nom_image:<tag> ou docker pull nom_image:<tag>
+```
+
+  - On peut lister les images pour voir:
+``` Command
+  docker image ls -a
+```
+
+    * Etape5: Pour lancer le conteur de l'image
+        Note: port frontend = "8501" , port backend = "5000" 
+``` Command
+  docker run -d -p port:port nom_image:<tag>
+```
+
+
+
+### Procédure 3 : Les étapes suivantes montrent comment exécuter le projet directement en local avec un environnement python isolé (Windows et sur Mac Os)
+  * Etape1: Cloner le projet (branch main)
+  * Etape2:
 
 #### Creer un nouveau environnement (utiliser la version de python 3.9)
   Réference (https://realpython.com/python-virtual-environments-a-primer/#create-it)
             (https://www.pythoniste.fr/anaconda/les-environnements-virtuels-en-python-avec-anaconda/)
             
   * Windows
+#### Créer un environnement virtual conda
 
 ``` Command
 conda create -n mon_environement python=<version>
 ```
 
-#### Pour activer l'environnement virtual conda
+#### Activer l'environnement virtual conda
 ```
 conda activate mon_environement
 ```
 
-#### Installation des packages
+#### Installer tout les packages nécessaires
 ```
 pip install -r requirements.txt
 ```
 
-#### Pour desactiver l'environnement virtual conda
+#### Désactiver l'environnement virtual conda
 ```
 conda deactivate
 ```
@@ -64,6 +90,7 @@ conda deactivate
 
   * Mac Os
 
+#### Créer un environnement virtual python (preciser la version de python)
 ``` Command
 python<version> -m venv mon_environement
 ```

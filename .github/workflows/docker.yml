@@ -3,7 +3,6 @@ name: UIE_M2 - Projet churn finance with CI/CD deploy
 env:
   DOCKER_USER: ${{secrets.USER_NAME}}
   DOCKER_PASSWORD: ${{secrets.PASSWORD}}
-  # DOCKER_REPO_NAME: ${{secrets.REPOSITORY_DOCKER_HUB}}
   DOCKER_REPO_NAME_BACK: ${{secrets.REPOSITORY_DOCKER_HUB_BACK}}
   DOCKER_REPO_NAME_FRONT: ${{secrets.REPOSITORY_DOCKER_HUB_FRONT}}
   MON_TEST: ${{secrets.MON_TEST_PWD}}
@@ -94,17 +93,3 @@ jobs:
       # Arreter le conteneur filter
       - name: Stop Docker Container FRONT and BACK
         run: docker stop $(docker ps --filter "ancestor=churn_finance_g2_c_p_m" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
-
-
-
-# # Processus du pipeline CD
-#   deploy:
-#     needs: build
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Deploy
-#       env:
-#           deploy_url: ${{ secrets.RENDER_DEPLOY_HOCK_URL }}
-#       run: |
-#         curl "$deploy_url"
