@@ -112,7 +112,7 @@ def main():
         st.image('Images/Customer-Churn.png', use_column_width='auto')
 
         # code pour specifier l'emplacement du fichier CSS
-        with open("app/statics/style.css") as f:
+        with open("app/static/css/style.css") as f:
             st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
 
         # User input for features
