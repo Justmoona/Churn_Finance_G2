@@ -94,7 +94,7 @@ jobs:
         run: docker stop $(docker ps --filter "ancestor=churn_finance_g2_c_p_m" --filter "ancestor=churn_finance_g2_back" --filter "ancestor=churn_finance_g2_front" -q)
 
 
-# Processus du pipeline CD
+# Processus du pipeline CD github action
   deploy:
     needs: build
     runs-on: ubuntu-latest
